@@ -58,6 +58,58 @@ function Entries() {
       .then(hideModal());
   }
 
+  function mood(mood) {
+    if (mood === "Happy") {
+      return (
+        <div>
+          <i style={{ fontSize: "20px" }} class="far fa-smile-beam">
+            &nbsp; Happy
+          </i>
+        </div>
+      );
+    } else if (mood === "Sad") {
+      return (
+        <div>
+          <i style={{ fontSize: "20px" }} class="far fa-frown">
+            &nbsp; Sad
+          </i>
+        </div>
+      );
+    } else if (mood === "Stressed") {
+      return (
+        <div>
+          <i style={{ fontSize: "20px" }} class="far fa-dizzy">
+            &nbsp; Stressed
+          </i>
+        </div>
+      );
+    } else if (mood === "Relaxed") {
+      return (
+        <div>
+          <i style={{ fontSize: "20px" }} class="far fa-smile-beam">
+            &nbsp; Relaxed
+          </i>
+        </div>
+      );
+    } else if (mood === "Mad") {
+      return (
+        <div>
+          <i style={{ fontSize: "20px" }} class="far fa-angry">
+            &nbsp; Mad
+          </i>
+        </div>
+      );
+    } else if (mood === "Meh") {
+      return (
+        <div>
+          <i style={{ fontSize: "20px" }} class="far fa-meh">
+            &nbsp; Meh
+          </i>
+        </div>
+      );
+    }
+  }
+
   const diaryEntries = function () {
     //Return Empty Sign if there's no data/diary
     if (posts.length === 0) {
@@ -93,6 +145,8 @@ function Entries() {
               </Button>
             }
           >
+            {mood(doc.mood)}
+            <br />
             {doc.input}
           </Card>
           <Modal

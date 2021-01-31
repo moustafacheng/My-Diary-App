@@ -111,6 +111,7 @@ function Entry() {
                 <Option value="Stressed">Stressed</Option>
                 <Option value="Relaxed">Relaxed</Option>
                 <Option value="Mad">Mad</Option>
+                <Option value="Meh">Meh</Option>
               </Select>
             </Form.Item>
 

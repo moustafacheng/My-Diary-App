@@ -112,6 +112,7 @@ code {
   border: none;
   background-color: rgba(199, 197, 197, 0.425);
   outline: none;
+  border-radius: 12px;
 }
 .container .form input::placeholder {
   color: rgba(0, 0, 0, 0.658);
@@ -197,12 +198,12 @@ code {
 }
 
 #app-title {
-  z-index: 1000;
+  z-index: 2;
   font-family: "Montserrat";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 40px;
-  margin-bottom: 400px;
+  margin-bottom: 550px;
   padding: 5px 10px;
 
   border-radius: 10px;
@@ -215,16 +216,39 @@ code {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
+  padding-top: auto;
 }
 
 .title-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  display: flex;
+  z-index: 1;
+  padding-bottom: 0px;
+  position: fixed;
+  display: inline-block;
   align-items: center;
   justify-content: center;
+}
+
+#forgotPasswordForm {
+  transition-timing-function: ease-in-out;
+  transition-duration: 1s;
+}
+
+.hidden {
+  opacity: 0;
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+  transition-delay: 0.2s;
+}
+
+.visible {
+  opacity: 1;
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+  transition-delay: 0.2s;
 }
