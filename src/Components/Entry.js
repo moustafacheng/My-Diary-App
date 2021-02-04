@@ -17,48 +17,39 @@ import { db } from "../firebase";
 import { FormProvider } from "antd/lib/form/context";
 import "moment";
 
-function Entry() {
-  const { TextArea } = Input;
-  const tailLayout = {
-    wrapperCol: { offset: 4, span: 16 },
-  };
-  const { Option } = Select;
+const { TextArea } = Input;
+const { Option } = Select;
+const tailLayout = {
+  wrapperCol: { offset: 4, span: 16 },
+};
 
+function Entry() {
   const { currentUser } = useAuth();
   const [form] = Form.useForm();
 
-  function handleSubmit(fieldsValue: any) {
-    if (
-      fieldsValue["date"] !== undefined &&
-      fieldsValue["mood"] !== undefined &&
-      fieldsValue["input"] !== undefined
-    ) {
+  async function handleSubmit(fieldsValue) {
+    if (fieldsValue["date"] && fieldsValue["mood"] && fieldsValue["input"]) {
       const dateValue = fieldsValue["date"].format("YYYY-MM-DD");
       const moodValue = fieldsValue["mood"];
       const inputValue = fieldsValue["input"];
 
-      return db
-        .collection("diaries")
-        .add({
-          creator: currentUser.uid,
-          date: dateValue,
-          mood: moodValue,
-          input: inputValue,
-        })
-        .then(() => {
-          message.success("Uploaded Successfully");
-        })
-        .then(() => {
-          form.resetFields();
-        });
+      await db.collection("diaries").add({
+        creator: currentUser.uid,
+        date: dateValue,
+        mood: moodValue,
+        input: inputValue,
+      });
+
+      message.success("Uploaded Successfully");
+      form.resetFields();
     } else {
-      if (fieldsValue["date"] === undefined) {
+      if (!fieldsValue["date"]) {
         message.error("Date Missing");
       }
-      if (fieldsValue["mood"] === undefined) {
+      if (!fieldsValue["mood"]) {
         message.error("Mood Missing");
       }
-      if (fieldsValue["input"] === undefined) {
+      if (!fieldsValue["input"]) {
         message.error("Input Missing");
       }
     }

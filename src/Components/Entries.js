@@ -9,164 +9,79 @@ import { DeleteOutlined } from "@ant-design/icons";
 // import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 require("firebase/firestore");
 
+function getMoodIcon(mood) {
+  switch (mood) {
+    case "Happy":
+    case "Relaxed":
+      return "fa-smile-beam";
+    case "Sad":
+      return "fa-frown";
+    case "Stressed":
+      return "fa-dizzy";
+    case "Mad":
+      return "fa-angry";
+    case "Meh":
+      return "fa-meh";
+    default:
+      return "fa-smile-beam";
+  }
+}
+
 function Entries() {
   const [diariesLoading, setDiariesLoading] = useState(false);
   const { currentUser } = useAuth();
   const [posts, setPosts] = useState([]); // could use array.length to check if it's empty or not
-  const [deleteModalRef, setDeleteModalRef] = useState();
+  const [modal, setModal] = useState(null);
 
   useEffect(() => {
-    setDiariesLoading(true);
-    db.collection("diaries")
-      .where("creator", "==", currentUser.uid)
-      .orderBy("date", "asc")
-      .get()
-      .then((x) => {
-        //Get the users diary posts' documents and add each document's id into their fields
-        const postID = x.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setPosts(postID);
-      })
-      .then(setDiariesLoading(false))
-      .then(console.log(posts));
+    getDiaries();
   }, []);
 
-  // function showModal(e) {
-  //   setModalVisibility(true);
-  // }
-  function hideModal() {
-    setDeleteModalRef("");
-  }
-  function checkVisibility(id) {
-    if (id === deleteModalRef) {
-      return true;
-    } else {
-      return false;
-    }
+  async function getDiaries() {
+    setDiariesLoading(true);
+
+    const x = await db
+      .collection("diaries")
+      .where("creator", "==", currentUser.uid)
+      .orderBy("date", "asc")
+      .get();
+
+    const postID = x.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+
+    setPosts(postID);
+    setDiariesLoading(false);
+    console.log({ posts });
   }
 
   function deleteDiary() {
     db.collection("diaries")
-      .doc(deleteModalRef)
+      .doc(modal)
       .delete()
       .then(() => {
         message.success("Deleted Successfully");
       })
-      .then(setPosts(posts.filter((doc) => doc.id !== deleteModalRef)))
-      .then(hideModal());
+      .then(setPosts(posts.filter((doc) => doc.id !== modal)))
+      .then(() => {
+        setModal(null);
+      });
   }
-
-  function mood(mood) {
-    if (mood === "Happy") {
-      return (
-        <div>
-          <i style={{ fontSize: "20px" }} class="far fa-smile-beam">
-            &nbsp; Happy
-          </i>
-        </div>
-      );
-    } else if (mood === "Sad") {
-      return (
-        <div>
-          <i style={{ fontSize: "20px" }} class="far fa-frown">
-            &nbsp; Sad
-          </i>
-        </div>
-      );
-    } else if (mood === "Stressed") {
-      return (
-        <div>
-          <i style={{ fontSize: "20px" }} class="far fa-dizzy">
-            &nbsp; Stressed
-          </i>
-        </div>
-      );
-    } else if (mood === "Relaxed") {
-      return (
-        <div>
-          <i style={{ fontSize: "20px" }} class="far fa-smile-beam">
-            &nbsp; Relaxed
-          </i>
-        </div>
-      );
-    } else if (mood === "Mad") {
-      return (
-        <div>
-          <i style={{ fontSize: "20px" }} class="far fa-angry">
-            &nbsp; Mad
-          </i>
-        </div>
-      );
-    } else if (mood === "Meh") {
-      return (
-        <div>
-          <i style={{ fontSize: "20px" }} class="far fa-meh">
-            &nbsp; Meh
-          </i>
-        </div>
-      );
-    }
-  }
-
-  const diaryEntries = function () {
-    //Return Empty Sign if there's no data/diary
-    if (posts.length === 0) {
-      return <Empty />;
-    }
-
-    //Return diaries as cards if diaries exist
-    else if (posts.length > 0) {
-      console.log(posts);
-      // return postsShown
-      return posts.map((doc) => (
-        <div key={doc.id}>
-          <Card
-            type="inner"
-            style={{
-              marginBottom: "30px",
-              maxHeight: "400px",
-              overflowX: "break",
-              overflowWrap: "break-word",
-              maxWidth: "1200px",
-              alignItems: "center",
-            }}
-            title={doc.date}
-            extra={
-              <Button
-                type="danger"
-                onClick={() => {
-                  setDeleteModalRef(doc.id);
-                }}
-                id={doc.id}
-              >
-                <DeleteOutlined />
-              </Button>
-            }
-          >
-            {mood(doc.mood)}
-            <br />
-            {doc.input}
-          </Card>
-          <Modal
-            title="Confirmation"
-            visible={checkVisibility(doc.id)}
-            onOk={deleteDiary}
-            onCancel={hideModal}
-            okText="Yes"
-            cancelText="Cancel"
-            id={doc.id}
-          >
-            <p>Are you sure you want to delete this entry?</p>
-          </Modal>
-        </div>
-      ));
-    }
-  };
 
   return (
     <div>
+      <Modal
+        title="Confirmation"
+        visible={!!modal}
+        onOk={deleteDiary}
+        onCancel={() => setModal(null)}
+        okText="Yes"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to delete this entry?</p>
+      </Modal>
+
       <Breadcrumb style={{ margin: "16px 0" }}>
         <Breadcrumb.Item>My Dairy</Breadcrumb.Item>
         <Breadcrumb.Item>My Entries</Breadcrumb.Item>
@@ -175,8 +90,48 @@ function Entries() {
         className="site-layout-background"
         style={{ padding: 24, minHeight: 380 }}
       >
-        {/* <Empty /> */}
-        {diaryEntries()}
+        {posts.length ? (
+          posts.map((doc) => (
+            <div key={doc.id}>
+              <Card
+                type="inner"
+                style={{
+                  marginBottom: 30,
+                  maxHeight: 400,
+                  overflowX: "break",
+                  overflowWrap: "break-word",
+                  maxWidth: 1200,
+                  alignItems: "center",
+                }}
+                title={doc.date}
+                extra={
+                  <Button
+                    type="danger"
+                    onClick={() => {
+                      setModal(doc.id);
+                    }}
+                    id={doc.id}
+                  >
+                    <DeleteOutlined />
+                  </Button>
+                }
+              >
+                <div>
+                  <i
+                    style={{ fontSize: 20 }}
+                    class={`far ${getMoodIcon(doc.mood)}`}
+                  >
+                    &nbsp; {doc.mood}
+                  </i>
+                </div>
+                <br />
+                {doc.input}
+              </Card>
+            </div>
+          ))
+        ) : (
+          <Empty />
+        )}
       </div>
       <BackTop />
     </div>
