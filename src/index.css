@@ -49,12 +49,6 @@ code {
   transition: 0.7s ease-in-out transform;
   overflow: hidden;
 }
-/* .container .form.sign-in-form {
-  left: 0;
-}
-.container .form.sign-up-form {
-  right: 0;
-} */
 .container .form .wrapper {
   position: absolute;
   top: 0;
@@ -139,7 +133,6 @@ code {
 }
 .container .overlay-container {
   position: absolute;
-  /* background-color: rgb(255, 93, 93); */
   right: 150%;
   top: 0;
   width: 50%;
@@ -152,7 +145,6 @@ code {
   background-position: center center;
   position: absolute;
   left: 0%;
-  /* background-color: rebeccapurple; */
   width: 200%;
   display: flex;
   align-items: center;

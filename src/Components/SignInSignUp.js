@@ -15,8 +15,7 @@ function SignInSignUp() {
   const passwordConfirmRef = useRef();
   const { signup } = useAuth();
   const { resetPassword } = useAuth();
-  const [error, setError] = useState("");
-  const [signInError, setSignInError] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   const loginEmailRef = useRef();
@@ -54,12 +53,11 @@ function SignInSignUp() {
     e.preventDefault();
 
     try {
-      setSignInError("");
       setLoading(true);
       await signin(loginEmailRef.current.value, loginPasswordRef.current.value);
       history.push("/");
     } catch {
-      setSignInError("Failed to Log In");
+      message.error("Failed to Log In");
     }
 
     setLoading(false);
@@ -70,11 +68,10 @@ function SignInSignUp() {
     e.preventDefault();
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match");
+      return message.error("Passwords do not match");
     }
 
     try {
-      setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value).then(
         (cred) => {
@@ -86,7 +83,7 @@ function SignInSignUp() {
 
       history.push("/");
     } catch {
-      setError("Failed to create account");
+      message.error("Failed to create account");
     }
     setLoading(false);
   }
@@ -101,7 +98,6 @@ function SignInSignUp() {
           <div class="wrapper">
             <form onSubmit={handleSubmit}>
               <h1>Sign up</h1>
-              {error && <Alert message={error} type="error" showIcon />}
               <br />
               <br />
               <input type="email" ref={emailRef} placeholder="Email" required />
@@ -160,9 +156,6 @@ function SignInSignUp() {
               {/* Log In Form, should be hidden if "forget password" is clicked */}
               <form onSubmit={handleSignIn} id="logInForm">
                 <h1>Log In</h1>
-                {signInError && (
-                  <Alert message={signInError} type="error" showIcon />
-                )}
                 <br />
                 <br />
                 <input
