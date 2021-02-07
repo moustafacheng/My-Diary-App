@@ -96,70 +96,7 @@ function SignInSignUp() {
         <div className="title-container">
           <div id="app-title">My Diary App</div>
         </div>
-        <div class="form sign-in-form">
-          <div class="wrapper">
-            {/* Log In Form, should be hidden if "forget password" is clicked */}
-            <form onSubmit={handleSignIn} id="logInForm">
-              <h1>Log In</h1>
-              {signInError && (
-                <Alert message={signInError} type="error" showIcon />
-              )}
-              <br />
-              <br />
-              <input
-                id="logInEmail"
-                type="email"
-                ref={loginEmailRef}
-                placeholder="Email"
-                required
-              />
-              <input
-                id="logInPassword"
-                type="password"
-                ref={loginPasswordRef}
-                placeholder="Password"
-                required
-              />
-              <button disabled={loading} type="submit" id="logInButton">
-                Log In
-              </button>
-              {/* handle forget password */}
-              <div
-                style={{ paddingTop: "25px" }}
-                onClick={triggerForgotPasswordForm}
-              >
-                Forgot Password?
-              </div>
-            </form>
-            {/* Forget Password form, should be shown if "forget password" is clicked */}
-            <form
-              onSubmit={handleForgotPassword}
-              id="forgotPasswordForm"
-              hidden
-            >
-              <h1>Reset Password</h1>
-              <br />
-              <br />
-              <input
-                id="resetPasswordEmail"
-                ref={resetPasswordEmailRef}
-                type="email"
-                placeholder="Email"
-                required
-              />
-              <button disabled={loading} type="submit" id="logInButton">
-                Reset
-              </button>
-              {/* handle forget password */}
-              <div
-                style={{ paddingTop: "25px" }}
-                onClick={handleCancelForgotPassword}
-              >
-                Cancel
-              </div>
-            </form>
-          </div>
-        </div>
+        {/******************* SIGN UP *******************/}
         <div class="form sign-up-form active">
           <div class="wrapper">
             <form onSubmit={handleSubmit}>
@@ -180,59 +117,137 @@ function SignInSignUp() {
                 placeholder="Confirm Password"
                 required
               />
-              <button disabled={loading} type="submit">
+              <button
+                disabled={loading}
+                type="submit"
+                className="regular-button"
+              >
                 Sign Up
               </button>
+              <div className="bottom-text">
+                <br />
+                Already Have An Account?
+                <br />
+                <button
+                  className="small-button"
+                  id="signInButton"
+                  onClick={() => {
+                    document.querySelector(
+                      ".container .overlay-container"
+                    ).style.transform = "translateX(200%)";
+                    document.querySelector(
+                      ".container .overlay-container .overlay"
+                    ).style.transform = "translateX(0%)";
+                    document
+                      .querySelector(".container .sign-in-form")
+                      .classList.add("active");
+                    document
+                      .querySelector(".container .sign-up-form")
+                      .classList.remove("active");
+                  }}
+                >
+                  Log In
+                </button>
+              </div>
             </form>
           </div>
         </div>
+
+        {/******************* SIGN IN *******************/}
         <div class="overlay-container">
-          <div class="overlay">
-            <div class="overlay-left">
-              <h1>Already have an account?</h1>
-              <br />
-              <button
-                id="signInButton"
-                onClick={() => {
-                  document.querySelector(
-                    ".container .overlay-container"
-                  ).style.transform = "translateX(100%)";
-                  document.querySelector(
-                    ".container .overlay-container .overlay"
-                  ).style.transform = "translateX(-50%)";
-                  document
-                    .querySelector(".container .sign-in-form")
-                    .classList.add("active");
-                  document
-                    .querySelector(".container .sign-up-form")
-                    .classList.remove("active");
-                }}
+          <div class="overlay sign-in-form">
+            <div class="overlay-1">
+              {/* Log In Form, should be hidden if "forget password" is clicked */}
+              <form onSubmit={handleSignIn} id="logInForm">
+                <h1>Log In</h1>
+                {signInError && (
+                  <Alert message={signInError} type="error" showIcon />
+                )}
+                <br />
+                <br />
+                <input
+                  id="logInEmail"
+                  type="email"
+                  ref={loginEmailRef}
+                  placeholder="Email"
+                  required
+                />
+                <input
+                  id="logInPassword"
+                  type="password"
+                  ref={loginPasswordRef}
+                  placeholder="Password"
+                  required
+                />
+                <button
+                  className="regular-button"
+                  disabled={loading}
+                  type="submit"
+                  id="logInButton"
+                >
+                  Log In
+                </button>
+                {/* handle forget password */}
+                <div
+                  className="forgot-password"
+                  onClick={triggerForgotPasswordForm}
+                >
+                  Forgot Password?
+                </div>
+
+                <div className="bottom-text-2">
+                  <br />
+                  <span className="no-account">No Account Yet ?</span>
+                  <br />
+                  <button
+                    className="small-button-2"
+                    id="signUpButton"
+                    onClick={() => {
+                      document.querySelector(
+                        ".container .overlay-container"
+                      ).style.transform = "translateX(0%)";
+                      document.querySelector(
+                        ".container .overlay-container .overlay"
+                      ).style.transform = "translateX(200%)";
+                      document
+                        .querySelector(".container .sign-up-form")
+                        .classList.add("active");
+                      document
+                        .querySelector(".container .sign-in-form")
+                        .classList.remove("active");
+                    }}
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              </form>
+              {/* Forget Password form, should be shown if "forget password" is clicked */}
+              <form
+                onSubmit={handleForgotPassword}
+                id="forgotPasswordForm"
+                hidden
               >
-                Log In
-              </button>
-            </div>
-            <div class="overlay-right">
-              <h1>No account yet?</h1>
-              <br />
-              <button
-                id="signUpButton"
-                onClick={() => {
-                  document.querySelector(
-                    ".container .overlay-container"
-                  ).style.transform = "translateX(0)";
-                  document.querySelector(
-                    ".container .overlay-container .overlay"
-                  ).style.transform = "translateX(0)";
-                  document
-                    .querySelector(".container .sign-up-form")
-                    .classList.add("active");
-                  document
-                    .querySelector(".container .sign-in-form")
-                    .classList.remove("active");
-                }}
-              >
-                Create Account
-              </button>
+                <h1>Reset Password</h1>
+                <br />
+                <br />
+                <input
+                  id="resetPasswordEmail"
+                  ref={resetPasswordEmailRef}
+                  type="email"
+                  placeholder="Email"
+                  required
+                />
+                <button disabled={loading} type="submit" id="resetButton">
+                  Reset
+                </button>
+                {/* handle forget password */}
+                <div
+                  style={{ paddingTop: "25px" }}
+                  onClick={handleCancelForgotPassword}
+                >
+                  Cancel
+                </div>
+              </form>
             </div>
           </div>
         </div>
